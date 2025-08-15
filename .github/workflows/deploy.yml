@@ -41,6 +41,6 @@ jobs:
       - name: Deploy Atomically
         run: |
           # 1. Upload new files to a temporary folder
-          scp -r -o StrictHostKeyChecking=no -P ${{ secrets.SSH_PORT }} dist/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/var/www/temp-blog/
+          scp -r -o StrictHostKeyChecking=no -P ${{ secrets.SSH_PORT }} dist/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/tmp/temp-blog/
           # 2. Use a single SSH command to atomically swap the folders
-          ssh -o StrictHostKeyChecking=no -p ${{ secrets.SSH_PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'rm -rf /var/www/blog.hzwd.xyz && mv /var/www/temp-blog /var/www/blog.hzwd.xyz'
+          ssh -o StrictHostKeyChecking=no -p ${{ secrets.SSH_PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'rm -rf /var/www/blog.hzwd.xyz && mv /tmp/temp-blog /var/www/blog.hzwd.xyz'
