@@ -43,4 +43,4 @@ jobs:
           # 1. Upload new files to a temporary folder
           scp -r -o StrictHostKeyChecking=no -P ${{ secrets.SSH_PORT }} dist/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/tmp/blog.hzwd.xyz/
           # 2. Use a single SSH command to atomically swap the folders
-          ssh -o StrictHostKeyChecking=no -p ${{ secrets.SSH_PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'rm -rf /var/www/blog.hzwd.xyz/* && cp -R /tmp/blog.hzwd.xyz /var/www/blog.hzwd.xyz/ && rm -R /tmp/blog.hzwd.xyz'
+          ssh -o StrictHostKeyChecking=no -p ${{ secrets.SSH_PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'rm -rf /var/www/blog.hzwd.xyz/* && cp -R /tmp/blog.hzwd.xyz/* /var/www/blog.hzwd.xyz/ && rm -R /tmp/blog.hzwd.xyz'
