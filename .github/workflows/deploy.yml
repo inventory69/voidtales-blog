@@ -15,12 +15,13 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '20'
 
       - name: Cache Node.js modules
+        id: cache-npm
         uses: actions/cache@v3
         with:
-          path: ~/.npm
+          path: node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
@@ -39,5 +40,5 @@ jobs:
 
       - name: Deploy via SSH
         run: |
-          ssh -o StrictHostKeyChecking=no -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} 'rm -rf /var/www/blog.hzwd.xyz/*'
-          scp -r -P ${{ secrets.SSH_PORT }} dist/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/blog.hzwd.xyz
+          ssh -o StrictHostKeyChecking=no -p ${{ secrets.SSH_PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'rm -rf /var/www/blog.hzwd.xyz/*'
+          scp -r -P ${{ secrets.SSH_PORT }} dist/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/var/www/blog.hzwd.xyz
