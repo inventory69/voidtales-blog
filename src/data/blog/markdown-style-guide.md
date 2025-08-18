@@ -1,6 +1,6 @@
 ---
 title: "'Markdown Style Guide'"
-pubDatetime: 2025-08-18 17:27:19
+pubDatetime: 2025-08-18 17:42:48
 description: ""
 ---
 ---
