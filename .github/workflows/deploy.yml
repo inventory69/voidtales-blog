@@ -39,14 +39,34 @@ jobs:
       - name: Build Astro Project
         run: npm run build
 
-      - name: Setup SSH Key
-        uses: webfactory/ssh-agent@v0.5.4
+      - name: 🚀 Deploy with rsync and atomic swap
+        uses: appleboy/ssh-action@master
         with:
-          ssh-private-key: ${{ secrets.SSH_KEY }}
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            # 1. Create a temporary folder with a unique name
+            NEW_DEPLOY_DIR="/tmp/blog.hzwd.xyz_$(date +%s)"
+            mkdir -p $NEW_DEPLOY_DIR
+            
+            # 2. Use rsync to transfer the files
+            rsync -az --progress dist/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:$NEW_DEPLOY_DIR/
+            
+            # 3. Atomically swap the folders and clean up
+            DEPLOY_PATH="/var/www/blog.hzwd.xyz"
+            mv $NEW_DEPLOY_DIR $DEPLOY_PATH
+            rm -rf $OLD_DEPLOY_PATH # Clean up old folder if it exists
 
-      - name: Deploy Atomically
-        run: |
-          # 1. Upload new files to a temporary folder
-          scp -r -o StrictHostKeyChecking=no -P ${{ secrets.SSH_PORT }} dist/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/tmp/blog.hzwd.xyz/
-          # 2. Use a single SSH command to atomically swap the folders
-          ssh -o StrictHostKeyChecking=no -p ${{ secrets.SSH_PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'rm -rf /var/www/blog.hzwd.xyz/* && cp -R /tmp/blog.hzwd.xyz/* /var/www/blog.hzwd.xyz/ && rm -R /tmp/blog.hzwd.xyz'
+      # - name: Setup SSH Key
+      #   uses: webfactory/ssh-agent@v0.5.4
+      #   with:
+      #     ssh-private-key: ${{ secrets.SSH_KEY }}
+
+      # - name: Deploy Atomically
+      #   run: |
+      #     # 1. Upload new files to a temporary folder
+      #     scp -r -o StrictHostKeyChecking=no -P ${{ secrets.SSH_PORT }} dist/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/tmp/blog.hzwd.xyz/
+      #     # 2. Use a single SSH command to atomically swap the folders
+      #     ssh -o StrictHostKeyChecking=no -p ${{ secrets.SSH_PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'rm -rf /var/www/blog.hzwd.xyz/* && cp -R /tmp/blog.hzwd.xyz/* /var/www/blog.hzwd.xyz/ && rm -R /tmp/blog.hzwd.xyz'
