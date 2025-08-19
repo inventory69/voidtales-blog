@@ -66,8 +66,11 @@ jobs:
           key: ${{ secrets.DIFFUSER_SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            # Temporäres Verzeichnis umbenennen und ins endgültige Ziel verschieben
-            sudo mv /home/${{ secrets.DIFFUSER_USERNAME }}/tmp_deploy/ /var/www/blog.hzwd.xyz
+            # Verschiebe den Inhalt von tmp_deploy in das Zielverzeichnis
+            sudo mv /home/${{ secrets.DIFFUSER_USERNAME }}/tmp_deploy/* /var/www/blog.hzwd.xyz
+            
+            # Lösche das leere temporäre Verzeichnis
+            sudo rm -r /home/${{ secrets.DIFFUSER_USERNAME }}/tmp_deploy
             
             # Optional: altes Verzeichnis bereinigen
             # sudo rm -rf /var/www/blog.hzwd.xyz-old
