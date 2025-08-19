@@ -45,6 +45,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
           port: ${{ secrets.SSH_PORT }}
           script: |
             # Die temporäre Schlüsseldatei erstellen
