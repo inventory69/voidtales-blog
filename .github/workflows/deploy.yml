@@ -1,8 +1,10 @@
 name: Deploy Astro Blog
+
 on:
   push:
     branches:
       - main
+
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
@@ -10,13 +12,13 @@ jobs:
     # 1. Definiere ein Environment für den Job
     environment:
       name: production
-      url: https://blog.hzwd.xyz/ # Optional: Füge die URL deines Ziels hinzu
+      url: https://blog.hzwd.xyz/
 
     steps:
       - name: 📥 Checkout Code
         uses: actions/checkout@v3
         with:
-          # Stellt sicher, dass das Projektverzeichnis korrekt ist
+          # Stellt sicher, dass das Projekt in den richtigen Ordner geklont wird
           path: 'voidtales-blog'
 
       - name: 🔧 Setup Node.js
@@ -41,12 +43,8 @@ jobs:
         run: npm run build
         working-directory: './voidtales-blog'
 
-      # ... vorherige Schritte
       - name: 🚀 Transfer with rsync
         run: |
-          # Temporären Ordner auf dem Server definieren
-          NEW_DEPLOY_DIR="/home/${{ secrets.DIFFUSER_USERNAME }}/voidtales-blog-temp_$(date +%s)"
-          
           # SSH-Key in eine temporäre Datei schreiben
           mkdir -p ~/.ssh
           echo "${{ secrets.DIFFUSER_SSH_KEY }}" > ~/.ssh/id_rsa
@@ -55,8 +53,8 @@ jobs:
           # Host-Key verifizieren
           ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.HOST }} >> ~/.ssh/known_hosts
           
-          # rsync vom Runner ausführen und in den temporären Ordner kopieren
-          rsync -az -e "ssh -p ${{ secrets.SSH_PORT }} -i ~/.ssh/id_rsa" --progress ./voidtales-blog/dist/ ${{ secrets.DIFFUSER_USERNAME }}@${{ secrets.HOST }}:$NEW_DEPLOY_DIR/
+          # rsync vom Runner ausführen und in einen temporären Ordner kopieren
+          rsync -az --progress ./voidtales-blog/dist/ ${{ secrets.DIFFUSER_USERNAME }}@${{ secrets.HOST }}:/home/${{ secrets.DIFFUSER_USERNAME }}/tmp_deploy/
         working-directory: '${{ github.workspace }}'
 
       - name: 🔄 Atomic Swap and Clean Up
@@ -68,11 +66,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             # Temporäres Verzeichnis umbenennen und ins endgültige Ziel verschieben
-            NEW_DEPLOY_DIR="/home/${{ secrets.DIFFUSER_USERNAME }}/voidtales-blog-temp_$(date +%s)"
-            DEPLOY_PATH="/var/www/blog.hzwd.xyz"
+            sudo mv /home/${{ secrets.DIFFUSER_USERNAME }}/tmp_deploy/ /var/www/blog.hzwd.xyz
             
-            # Den Atomic Swap Befehl ausführen
-            sudo mv $NEW_DEPLOY_DIR $DEPLOY_PATH
-            
-            # Optional: Altes Verzeichnis bereinigen
+            # Optional: altes Verzeichnis bereinigen
             # sudo rm -rf /var/www/blog.hzwd.xyz-old
