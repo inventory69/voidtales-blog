@@ -43,9 +43,8 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
-          #known_hosts: ${{ secrets.KNOWN_HOSTS }}
+          username: ${{ secrets.DIFFUSER_USERNAME }}
+          key: ${{ secrets.DIFFUSER_SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
             # 1. Manuelle Host Key Verifizierung
@@ -65,7 +64,7 @@ jobs:
             ls -la $GITHUB_WORKSPACE
 
             # 3. rsync verwenden, um die Dateien zu übertragen
-            rsync -az -e 'ssh -p ${{ secrets.SSH_PORT }}' --progress $GITHUB_WORKSPACE/dist/ ${{ secrets.USERNAME }}@${{ secrets.HOST }}:$NEW_DEPLOY_DIR/
+            rsync -az -e 'ssh -p ${{ secrets.SSH_PORT }}' --progress $GITHUB_WORKSPACE/dist/ ${{ secrets.DIFFUSER_USERNAME }}@${{ secrets.HOST }}:$NEW_DEPLOY_DIR/
       
             # 4. Ordner atomar tauschen
             DEPLOY_PATH="/var/www/dettmer.dev"
