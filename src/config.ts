@@ -5,7 +5,7 @@ export const SITE = {
   desc: "A minimal blog for the voidtales server.",
   title: "VoidTales Blog",
   ogImage: "astropaper-og.jpg",
-  lightAndDarkMode: true,
+  lightAndDarkMode: false,
   postPerIndex: 8,
   postPerPage: 8,
   scheduledPostMargin: 15 * 60 * 1000, // 15 minutes
