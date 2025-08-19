@@ -54,7 +54,8 @@ jobs:
           ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.HOST }} >> ~/.ssh/known_hosts
           
           # rsync vom Runner ausführen und in einen temporären Ordner kopieren
-          rsync -az --progress ./voidtales-blog/dist/ ${{ secrets.DIFFUSER_USERNAME }}@${{ secrets.HOST }}:/home/${{ secrets.DIFFUSER_USERNAME }}/tmp_deploy/
+          # Korrigierter rsync-Befehl mit SSH-Parametern
+          rsync -az -e "ssh -p ${{ secrets.SSH_PORT }} -i ~/.ssh/id_rsa" --progress ./voidtales-blog/dist/ ${{ secrets.DIFFUSER_USERNAME }}@${{ secrets.HOST }}:/home/${{ secrets.DIFFUSER_USERNAME }}/tmp_deploy/
         working-directory: '${{ github.workspace }}'
 
       - name: 🔄 Atomic Swap and Clean Up
