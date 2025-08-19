@@ -45,27 +45,28 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          known_hosts: ${{ secrets.KNOWN_HOSTS }}
+          #known_hosts: ${{ secrets.KNOWN_HOSTS }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            # Die temporäre Schlüsseldatei erstellen
+            # 1. Manuelle Host Key Verifizierung
+            # SSH-Client-Ordner erstellen, falls nicht vorhanden
             mkdir -p ~/.ssh
-            echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa_tmp
-            chmod 600 ~/.ssh/id_rsa_tmp
+            # Finde und speichere den Host-Key des Servers
+            ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.HOST }} >> ~/.ssh/known_hosts
       
-            # 1. Temporären Ordner erstellen
-            NEW_DEPLOY_DIR="/tmp/blog.hzwd.xyz_$(date +%s)"
+            # 2. Temporären Ordner erstellen
+            NEW_DEPLOY_DIR="/tmp/dettmer.dev-website_$(date +%s)"
             mkdir -p $NEW_DEPLOY_DIR
       
-            # 2. rsync verwenden, um die Dateien zu übertragen
-            rsync -az -e 'ssh -p ${{ secrets.SSH_PORT }}' --progress dist/ ${{ secrets.USERNAME }}@${{ secrets.HOST }}:$NEW_DEPLOY_DIR/
+            # 3. rsync verwenden, um die Dateien zu übertragen
+            rsync -az --progress dist/ ${{ secrets.USERNAME }}@${{ secrets.HOST }}:$NEW_DEPLOY_DIR/
       
-            # 3. Ordner atomar tauschen
-            DEPLOY_PATH="/var/www/blog.hzwd.xyz"
+            # 4. Ordner atomar tauschen
+            DEPLOY_PATH="/var/www/dettmer.dev"
             sudo mv $NEW_DEPLOY_DIR $DEPLOY_PATH
       
-            # Optional: Bereinigen des alten Verzeichnisses, falls benötigt
-            # sudo rm -rf $OLD_DEPLOY_PATH 
+      # Optional: alten Ordner löschen
+      # sudo rm -rf $OLD_DEPLOY_PATH
 
       # # 1. Create a temporary folder with a unique name
             # NEW_DEPLOY_DIR="/tmp/blog.hzwd.xyz_$(date +%s)"
