@@ -66,11 +66,21 @@ jobs:
           key: ${{ secrets.DIFFUSER_SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            # Verschiebe den Inhalt von tmp_deploy in das Zielverzeichnis
-            sudo mv /home/${{ secrets.DIFFUSER_USERNAME }}/tmp_deploy/* /var/www/blog.hzwd.xyz
-            
-            # Lösche das leere temporäre Verzeichnis
-            sudo rm -r /home/${{ secrets.DIFFUSER_USERNAME }}/tmp_deploy
-            
-            # Optional: altes Verzeichnis bereinigen
-            # sudo rm -rf /var/www/blog.hzwd.xyz-old
+            # 1. Definiere die Pfade
+            NEW_DEPLOY_PATH="/home/${{ secrets.DIFFUSER_USERNAME }}/tmp_deploy"
+            FINAL_PATH="/var/www/blog.hzwd.xyz"
+            BACKUP_PATH="/var/www/blog.hzwd.xyz-old"
+
+            # 2. Entferne das alte Backup-Verzeichnis, falls es existiert
+            sudo rm -rf $BACKUP_PATH
+
+            # 3. Benenne den alten Ordner um (dies ist der Atomic Swap!)
+            # Stelle sicher, dass der Ordner existiert, um Fehler zu vermeiden
+            if [ -d "$FINAL_PATH" ]; then
+              sudo mv $FINAL_PATH $BACKUP_PATH
+            fi
+
+            # 4. Verschiebe den neuen Ordner an den endgültigen Ort
+            sudo mv $NEW_DEPLOY_PATH $FINAL_PATH
+
+            echo "✅ Deployment erfolgreich abgeschlossen."
