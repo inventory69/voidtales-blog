@@ -41,18 +41,22 @@ jobs:
         run: npm run build
         working-directory: './voidtales-blog'
 
+      # ... vorherige Schritte
       - name: 🚀 Transfer with rsync
         run: |
+          # Temporären Ordner auf dem Server definieren
+          NEW_DEPLOY_DIR="/home/${{ secrets.DIFFUSER_USERNAME }}/voidtales-blog-temp_$(date +%s)"
+          
           # SSH-Key in eine temporäre Datei schreiben
           mkdir -p ~/.ssh
           echo "${{ secrets.DIFFUSER_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           
-          # Sicherstellen, dass der Host-Schlüssel bekannt ist
+          # Host-Key verifizieren
           ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.HOST }} >> ~/.ssh/known_hosts
           
-          # rsync vom Runner ausführen
-          rsync -az -e "ssh -p ${{ secrets.SSH_PORT }} -i ~/.ssh/id_rsa" --progress ./voidtales-blog/dist/ ${{ secrets.DIFFUSER_USERNAME }}@${{ secrets.HOST }}:/home/blogadmin/
+          # rsync vom Runner ausführen und in den temporären Ordner kopieren
+          rsync -az -e "ssh -p ${{ secrets.SSH_PORT }} -i ~/.ssh/id_rsa" --progress ./voidtales-blog/dist/ ${{ secrets.DIFFUSER_USERNAME }}@${{ secrets.HOST }}:$NEW_DEPLOY_DIR/
         working-directory: '${{ github.workspace }}'
 
       - name: 🔄 Atomic Swap and Clean Up
@@ -64,7 +68,11 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             # Temporäres Verzeichnis umbenennen und ins endgültige Ziel verschieben
-            sudo mv /home/blogadmin/dist /var/www/blog.hzwd.xyz
+            NEW_DEPLOY_DIR="/home/${{ secrets.DIFFUSER_USERNAME }}/voidtales-blog-temp_$(date +%s)"
+            DEPLOY_PATH="/var/www/blog.hzwd.xyz"
             
-            # optional: altes Verzeichnis bereinigen
+            # Den Atomic Swap Befehl ausführen
+            sudo mv $NEW_DEPLOY_DIR $DEPLOY_PATH
+            
+            # Optional: Altes Verzeichnis bereinigen
             # sudo rm -rf /var/www/blog.hzwd.xyz-old
