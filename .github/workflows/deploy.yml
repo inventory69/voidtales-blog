@@ -52,7 +52,7 @@ jobs:
             mkdir -p $NEW_DEPLOY_DIR
             
             # 2. Use rsync to transfer the files
-            rsync -az -e 'ssh -p ${{ secrets.SSH_PORT }}' --progress dist/ ${{ secrets.USERNAME }}@${{ secrets.HOST }}:$NEW_DEPLOY_DIR/
+            rsync -az -e 'ssh -p ${{ secrets.SSH_PORT }} -i ${{ secrets.SSH_KEY }}' --progress dist/ ${{ secrets.USERNAME }}@${{ secrets.HOST }}:$NEW_DEPLOY_DIR/
             
             # 3. Atomically swap the folders and clean up
             DEPLOY_PATH="/var/www/blog.hzwd.xyz"
