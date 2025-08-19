@@ -1,16 +1,23 @@
 name: Deploy Astro Blog
-
 on:
   push:
     branches:
       - main
-
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
+
+    # 1. Definiere ein Environment für den Job
+    environment:
+      name: production
+      url: https://blog.hzwd.xyz/ # Optional: Füge die URL deines Ziels hinzu
+
     steps:
       - name: 📥 Checkout Code
         uses: actions/checkout@v3
+        with:
+          # Stellt sicher, dass das Projektverzeichnis korrekt ist
+          path: 'voidtales-blog'
 
       - name: 🔧 Setup Node.js
         uses: actions/setup-node@v3
@@ -21,28 +28,33 @@ jobs:
         id: cache-npm
         uses: actions/cache@v3
         with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          path: voidtales-blog/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/voidtales-blog/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
 
       - name: 🧩 Install Dependencies
         run: npm install
+        working-directory: './voidtales-blog'
 
       - name: 🔨 Build Astro Project
         run: npm run build
+        working-directory: './voidtales-blog'
 
       - name: 🚀 Transfer with rsync
-        uses: burnett01/rsync-deployments@5.0
-        with:
-          remote_host: ${{ secrets.HOST }}
-          remote_user: ${{ secrets.DIFFUSER_USERNAME }}
-          remote_key: ${{ secrets.DIFFUSER_SSH_KEY }}
-          remote_port: ${{ secrets.SSH_PORT }}
-          source_path: './dist/'
-          remote_path: '/var/www/dettmer.dev-temp/'
-          rsync_args: '-az --delete --progress'
-      
+        run: |
+          # SSH-Key in eine temporäre Datei schreiben
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DIFFUSER_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          
+          # Sicherstellen, dass der Host-Schlüssel bekannt ist
+          ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.HOST }} >> ~/.ssh/known_hosts
+          
+          # rsync vom Runner ausführen
+          rsync -az -e "ssh -p ${{ secrets.SSH_PORT }} -i ~/.ssh/id_rsa" --progress ./voidtales-blog/dist/ ${{ secrets.DIFFUSER_USERNAME }}@${{ secrets.HOST }}:/home/blogadmin/
+        working-directory: '${{ github.workspace }}'
+
       - name: 🔄 Atomic Swap and Clean Up
         uses: appleboy/ssh-action@master
         with:
@@ -51,6 +63,8 @@ jobs:
           key: ${{ secrets.DIFFUSER_SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            DEPLOY_PATH="/var/www/dettmer.dev"
-            sudo mv /var/www/dettmer.dev-temp $DEPLOY_PATH
-            sudo rm -rf /var/www/dettmer.dev-old
+            # Temporäres Verzeichnis umbenennen und ins endgültige Ziel verschieben
+            sudo mv /home/blogadmin/dist /var/www/blog.hzwd.xyz
+            
+            # optional: altes Verzeichnis bereinigen
+            # sudo rm -rf /var/www/blog.hzwd.xyz-old
