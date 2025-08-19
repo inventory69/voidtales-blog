@@ -58,6 +58,12 @@ jobs:
             NEW_DEPLOY_DIR="/tmp/dettmer.dev-website_$(date +%s)"
             mkdir -p $NEW_DEPLOY_DIR
       
+            # Überprüfe den Pfad und Inhalt
+            ls -la $GITHUB_WORKSPACE
+            ls -la $GITHUB_WORKSPACE/dist
+            ls -la dist
+            ls -la
+
             # 3. rsync verwenden, um die Dateien zu übertragen
             rsync -az -e 'ssh -p ${{ secrets.SSH_PORT }}' --progress $GITHUB_WORKSPACE/dist/ ${{ secrets.USERNAME }}@${{ secrets.HOST }}:$NEW_DEPLOY_DIR/
       
