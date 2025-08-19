@@ -59,7 +59,7 @@ jobs:
             mkdir -p $NEW_DEPLOY_DIR
       
             # 3. rsync verwenden, um die Dateien zu übertragen
-            rsync -az --progress dist/ ${{ secrets.USERNAME }}@${{ secrets.HOST }}:$NEW_DEPLOY_DIR/
+            rsync -az -e 'ssh -p ${{ secrets.SSH_PORT }}' --progress dist/ ${{ secrets.USERNAME }}@${{ secrets.HOST }}:$NEW_DEPLOY_DIR/
       
             # 4. Ordner atomar tauschen
             DEPLOY_PATH="/var/www/dettmer.dev"
