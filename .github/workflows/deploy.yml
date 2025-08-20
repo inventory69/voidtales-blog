@@ -59,6 +59,7 @@ jobs:
         working-directory: '${{ github.workspace }}'
 
       - name: 🔄 Atomic Swap and Clean Up
+        id: 'laststep'
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
