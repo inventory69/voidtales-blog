@@ -12,7 +12,7 @@ jobs:
     # 1. Definiere ein Environment für den Job
     environment:
       name: production
-      url: https://blog.hzwd.xyz/
+      url: https://blog.voidtales.win/
 
     steps:
       - name: 📥 Checkout Code
@@ -68,8 +68,8 @@ jobs:
           script: |
             # 1. Definiere die Pfade
             NEW_DEPLOY_PATH="/home/${{ secrets.DIFFUSER_USERNAME }}/tmp_deploy"
-            FINAL_PATH="/var/www/blog.hzwd.xyz"
-            BACKUP_PATH="/var/www/blog.hzwd.xyz-old"
+            FINAL_PATH="/var/www/blog.voidtales.win"
+            BACKUP_PATH="/var/www/blog.voidtales.win-old"
 
             # 2. Entferne das alte Backup-Verzeichnis, falls es existiert
             sudo rm -rf $BACKUP_PATH
