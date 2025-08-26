@@ -14,10 +14,10 @@ html[data-theme="light"] {
 
 html[data-theme="dark"] {
   --background: #000123;
-  --accent: #617bff;
+  --accent: #880b88;
   --foreground: #eaedf3;
-  --muted: #0c0e4f;
-  --border: #303f8a;
+  --muted: #370955;
+  --border: #370955;
 }
 
 @theme inline {
@@ -51,6 +51,37 @@ html[data-theme="dark"] {
   section,
   footer {
     @apply mx-auto max-w-app px-4;
+  }
+}
+/* Dark-only background image + stronger overlay + vignette*/
+@layer base {
+  /* target the project dark-theme selector you already use */
+  :root[saved-theme="dark"] body,
+  html[data-theme="dark"] body,
+  :root[data-color-mode="dark"] body,
+  html.dark body {
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+
+    /* overlay (dark), vignette, then image from public/images */
+    background:
+      linear-gradient(rgba(6,6,10,0.82), rgba(6,6,10,0.82)),
+      radial-gradient(ellipse at center, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.6) 100%),
+      url('/images/index-dark.webp') center/cover no-repeat fixed;
+
+    background-color: #05040a; /* fallback color */
+  }
+
+  /* mobile: avoid fixed attachment for better perf on phones */
+  @media (max-width: 767px) {
+    :root[saved-theme="dark"] body,
+    html[data-theme="dark"] body,
+    :root[data-color-mode="dark"] body,
+    html.dark body {
+      background-attachment: scroll;
+      -webkit-backdrop-filter: blur(1px);
+      backdrop-filter: blur(1px);
+    }
   }
 }
 
