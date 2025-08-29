@@ -1,3 +1,4 @@
+# Phase 1
 FROM node:20-alpine AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
@@ -20,5 +21,11 @@ COPY --from=build /app/dist ./dist
 COPY --from=build /app/package.json ./package.json
 COPY --from=build /app/node_modules ./node_modules
  
+# Phase 2: Production (Serving with Nginx)
+FROM nginx:alpine
+# Kopiere die gebauten statischen Dateien in den Nginx-Webserver-Ordner
+COPY --from=build /app/dist /usr/share/nginx/html
+# Nginx-Standardbefehl verwenden, es ist keine `CMD`-Anweisung nötig
+
 EXPOSE 80
-CMD ["pnpm", "start"]
+# CMD ["pnpm", "start"]
