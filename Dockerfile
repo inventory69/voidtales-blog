@@ -28,4 +28,4 @@ COPY --from=build /app/dist /usr/share/nginx/html
 # Nginx-Standardbefehl verwenden, es ist keine `CMD`-Anweisung nötig
 
 EXPOSE 80
-# CMD ["pnpm", "start"]
+# CMD ["pnpm", "start"] // test
