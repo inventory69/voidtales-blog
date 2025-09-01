@@ -1,6 +1,9 @@
 # generated types
 .astro/
 
+# output folder
+dist/
+
 # dependencies
 node_modules/
 
