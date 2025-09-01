@@ -5,7 +5,7 @@ ENV PATH="$PNPM_HOME:$PATH"
 # Enable corepack to manage package managers like pnpm
 RUN corepack enable
 
----
+# ---
 
 # Stage 2: The build stage, where we install dependencies and build the application
 FROM base AS build
@@ -21,7 +21,7 @@ ENV NODE_ENV=production
 # Build the application for production
 RUN pnpm run build
 
----
+# ---
 
 # Stage 3: The deployment stage for running a Node.js server (this part seems unused based on the final image)
 FROM base AS dokploy
@@ -33,7 +33,7 @@ COPY --from=build /app/dist ./dist
 COPY --from=build /app/package.json ./package.json
 COPY --from=build /app/node_modules ./node_modules
 
----
+# ---
 
 # Stage 4: The final, production-ready image for serving with Nginx
 FROM nginx:alpine
