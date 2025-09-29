@@ -10,14 +10,14 @@ After your journey through Ibya, the Awakened will soon board Emmeline, the forg
 
 Aridia is a land of contrasts: within its walls, joy and revelry thrive, while beyond them lie forgotten temples, fractured factions, and the weight of a prophecy. Already, whispers speak of a substance said to hold both reflection and revelation… and many seek to claim it for their own.
 
-Chapter II will bring:
-✨ The continuation of your main quest: awaken Aridos, the Pride and Ambition — God of the Hidden and the Rain.
-✨ New challenges that test not only your strength, but your place in the unfolding story.
-✨ Expanding lore — the journey of the Awakened deepens, and Aridia reveals its hidden truths.
-✨ The capital of Aridia, alive with vibrant encounters and festivities.
-✨ Outer deserts, where ruins and temples wait to thrust terrible powers into the wrong hands.
-✨ A floating tower — each faction sees it as a different symbol, though none dare ask what stirs within.
-✨ The Archives, where mischievous foxes feast on melons, spin riddles, and play pranks without end.
+Chapter II will bring:  
+✨ The continuation of your main quest: awaken Aridos, the Pride and Ambition — God of the Hidden and the Rain.  
+✨ New challenges that test not only your strength, but your place in the unfolding story.  
+✨ Expanding lore — the journey of the Awakened deepens, and Aridia reveals its hidden truths.  
+✨ The capital of Aridia, alive with vibrant encounters and festivities.  
+✨ Outer deserts, where ruins and temples wait to thrust terrible powers into the wrong hands.  
+✨ A floating tower — each faction sees it as a different symbol, though none dare ask what stirs within.  
+✨ The Archives, where mischievous foxes feast on melons, spin riddles, and play pranks without end.  
 ✨ And even more places I won’t spoil just yet…
 
 The rails ahead are shrouded in sand and secrecy, but one thing is certain: the train is moving again, and the desert is waiting. 🌵
